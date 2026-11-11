@@ -1,0 +1,21 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "colocs": {
+      "__TOKEN__": {
+        "kills": {
+          ".read": true,
+          "$id": {
+            ".write": "(!data.exists() && newData.exists()) || (data.exists() && !newData.exists() && data.child('at').val() > now - 600000)",
+            ".validate": "newData.hasChildren(['who', 'weapon', 'at'])",
+            "who": { ".validate": "newData.isString() && newData.val().matches(/^(Lallie|Pascale|Camille|Clara|Eurydice|Katja|Alexandre|Edouard|Guy|Loan)$/)" },
+            "weapon": { ".validate": "newData.isString() && newData.val().matches(/^(main|chausson|livre|journal|balai|autre)$/)" },
+            "at": { ".validate": "newData.val() === now" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    }
+  }
+}
