@@ -209,3 +209,108 @@ body {
 .ledger .leader .name { color: var(--gold); }
 .ledger .zero { opacity: .55; }
 .empty { font-style: italic; margin: 6px 0 0; }
+
+/* ===== Animations ===== */
+
+/* La mite vole sur place en attendant son sort */
+.moth svg { animation: wander 3.2s ease-in-out infinite; }
+.wing { transform-box: fill-box; }
+.wing-l { transform-origin: right center; animation: flap-l .18s ease-in-out infinite alternate; }
+.wing-r { transform-origin: left center; animation: flap-r .18s ease-in-out infinite alternate; }
+@keyframes flap-l { to { transform: scaleX(.55) skewY(6deg); } }
+@keyframes flap-r { to { transform: scaleX(.55) skewY(-6deg); } }
+@keyframes wander {
+  0%, 100% { transform: translate(0, 0) rotate(-4deg); }
+  25% { transform: translate(-28px, -14px) rotate(6deg); }
+  50% { transform: translate(18px, -24px) rotate(-8deg); }
+  75% { transform: translate(30px, 6px) rotate(4deg); }
+}
+
+/* L'arme attend hors champ, au-dessus de la mite */
+.smasher { top: calc(58% - 52px); transform: translate(-50%, -260%); }
+
+.splat {
+  left: 50%; top: 58%;
+  width: 150px; height: 110px;
+  margin: -55px 0 0 -75px;
+  background:
+    radial-gradient(circle at 50% 50%, var(--blood) 0 30%, transparent 31%),
+    radial-gradient(circle at 18% 30%, var(--blood) 0 9%, transparent 10%),
+    radial-gradient(circle at 84% 26%, var(--blood) 0 7%, transparent 8%),
+    radial-gradient(circle at 78% 80%, var(--blood) 0 10%, transparent 11%),
+    radial-gradient(circle at 24% 78%, var(--blood) 0 6%, transparent 7%),
+    radial-gradient(ellipse at 50% 50%, rgba(122,92,62,.55) 0 46%, transparent 47%);
+  mix-blend-mode: multiply;
+}
+
+.stamp {
+  left: 50%; top: 5%;
+  padding: 2px 12px 0;
+  font: 34px/1.2 var(--display);
+  color: var(--blood);
+  border: 4px solid var(--blood);
+  border-radius: 6px;
+  transform: translate(-50%, 0) rotate(-12deg);
+  mix-blend-mode: multiply;
+}
+
+/* Déclenché par playSquash() : la classe .squash sur l'affiche */
+.squash { animation: shake .9s; }
+.squash .smasher { animation: slam .9s cubic-bezier(.3, 0, .4, 1); }
+.squash .moth { animation: flatten .9s; }
+.squash .moth .wing { animation: none; }
+.squash .splat { animation: splat .9s; }
+.squash .stamp { animation: stamp .9s; }
+.squash .plus { animation: float-up .9s ease-out; }
+
+@keyframes slam {
+  0% { transform: translate(-50%, -260%); }
+  28% { transform: translate(-50%, 6%) scale(1.15, .88); }
+  40% { transform: translate(-50%, 0) scale(1); }
+  70% { transform: translate(-50%, 0); }
+  100% { transform: translate(-50%, -260%); }
+}
+@keyframes flatten {
+  0%, 26% { transform: none; opacity: 1; }
+  30%, 72% { transform: translateY(12px) scale(1.35, .12); opacity: 1; }
+  76% { transform: translateY(12px) scale(1.35, .12); opacity: 0; }
+  77% { transform: translateX(-220px) translateY(-60px) rotate(-20deg); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+@keyframes splat {
+  0%, 27% { opacity: 0; transform: scale(.3); }
+  32% { opacity: .9; transform: scale(1.1); }
+  70% { opacity: .8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+@keyframes stamp {
+  0%, 30% { opacity: 0; transform: translate(-50%, 0) rotate(-12deg) scale(2.4); }
+  40% { opacity: 1; transform: translate(-50%, 0) rotate(-12deg) scale(1); }
+  85% { opacity: 1; transform: translate(-50%, 0) rotate(-12deg) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, 0) rotate(-12deg) scale(1); }
+}
+@keyframes shake {
+  0%, 28%, 46%, 100% { transform: none; }
+  31% { transform: translate(-4px, 3px) rotate(-.6deg); }
+  35% { transform: translate(4px, -2px) rotate(.5deg); }
+  40% { transform: translate(-2px, 1px); }
+}
+@keyframes float-up {
+  0%, 30% { opacity: 0; transform: translateY(0); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-44px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moth svg, .wing-l, .wing-r { animation: none; }
+  .squash, .squash .smasher, .squash .moth, .squash .splat { animation: none; }
+  .squash .stamp { animation: fade 1s; }
+  .squash .plus { animation: fade 1s; }
+  @keyframes fade { 0%, 100% { opacity: 0; } 20%, 80% { opacity: 1; } }
+}
+
+@media (max-width: 360px) {
+  .poster { padding-left: 14px; padding-right: 14px; }
+  .weapons { gap: 4px; }
+  .weapon { width: 38px; height: 38px; font-size: 19px; }
+}
