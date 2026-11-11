@@ -9,6 +9,7 @@ export const WEAPONS = [
   { id: "livre", emoji: "📕", label: "Livre" },
   { id: "journal", emoji: "🗞️", label: "Journal" },
   { id: "balai", emoji: "🧹", label: "Balai" },
+  { id: "serviette", emoji: "🧣", label: "Serviette / torchon" },
   { id: "autre", emoji: "❓", label: "Autre" },
 ];
 

@@ -34,7 +34,7 @@ Garde-le de côté. **Ne le commite jamais** : le dépôt est public.
 
 Ces règles :
 - n'ouvrent la lecture et l'écriture qu'avec ce token ;
-- n'acceptent que les dix prénoms et les six armes connus ;
+- n'acceptent que les dix prénoms et les sept armes connues ;
 - permettent d'ajouter une mite, ou d'en supprimer une de moins de 10 minutes (le bouton « annuler »), mais jamais de modifier une mite.
 
 ### 5. Mettre en ligne avec GitHub Pages
