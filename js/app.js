@@ -84,7 +84,12 @@ function renderCounts() {
   renderUndo();
 }
 
-// --- Animation (enrichie à la tâche 4) ---
+// --- Animation ---
+// Retire .squash à la fin du tremblement de l'affiche, sinon les ailes de la mite restent figées.
+document.addEventListener("animationend", (e) => {
+  if (e.target.id === "poster" && e.animationName === "shake") e.target.classList.remove("squash");
+});
+
 export function playSquash() {
   const poster = $("poster");
   poster.classList.remove("squash");
@@ -199,4 +204,9 @@ async function main() {
   }
 }
 
-main();
+main().catch((err) => {
+  // Module CDN injoignable, config Firebase pas remplie… : jamais de page blanche.
+  console.error(err);
+  $("closed-msg").textContent = "Le saloon n'arrive pas à ouvrir : la connexion a échoué. Réessaie dans un moment.";
+  show("closed");
+});
