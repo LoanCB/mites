@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b2a1a">
+  <title>Wanted : les mites</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦋</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Rye&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Saloon fermé : pas de token valide -->
+  <section id="closed" class="screen" hidden>
+    <div class="poster">
+      <h1 class="display">Saloon fermé</h1>
+      <p>Ce lien ne donne accès à aucun tableau de chasse. Demande le bon lien à ta coloc.</p>
+    </div>
+  </section>
+
+  <!-- Choix du chasseur -->
+  <section id="who" class="screen" hidden>
+    <div class="poster">
+      <h1 class="display">Qui es-tu, étranger&nbsp;?</h1>
+      <div class="who-grid" id="who-grid"></div>
+    </div>
+  </section>
+
+  <!-- Écran principal -->
+  <main id="main" class="screen" hidden>
+    <div class="poster" id="poster">
+      <h1 class="display wanted">WANTED</h1>
+      <p class="hunter">Chasseur : <span id="hunter-name"></span> <button class="link" id="not-me" type="button">Pas toi ?</button></p>
+
+      <button id="stage" class="stage" type="button" aria-label="Écraser une mite">
+        <span class="moth" id="moth" aria-hidden="true">
+          <svg viewBox="0 0 120 90" width="120" height="90">
+            <g class="wing wing-l"><path d="M60 45 C40 10 8 8 6 30 C4 48 30 58 60 50Z"/><path d="M58 52 C38 56 22 72 30 84 C40 92 54 72 60 56Z"/></g>
+            <g class="wing wing-r"><path d="M60 45 C80 10 112 8 114 30 C116 48 90 58 60 50Z"/><path d="M62 52 C82 56 98 72 90 84 C80 92 66 72 60 56Z"/></g>
+            <ellipse class="body" cx="60" cy="52" rx="5" ry="18"/>
+            <path class="antenna" d="M58 36 C54 24 48 20 44 18 M62 36 C66 24 72 20 76 18"/>
+          </svg>
+        </span>
+        <span class="splat" id="splat" aria-hidden="true"></span>
+        <span class="smasher" id="smasher" aria-hidden="true">🖐️</span>
+        <span class="stamp" id="stamp" aria-hidden="true">Abattue !</span>
+      </button>
+
+      <p class="reward"><span id="count">0 prime</span><span class="plus" id="plus" aria-hidden="true">+1</span></p>
+
+      <div class="weapons" id="weapons" role="group" aria-label="Arme"></div>
+
+      <button class="link undo" id="undo" type="button" hidden>↶ annuler la dernière</button>
+      <a class="link to-board" href="#board">Tableau des primes ↓</a>
+    </div>
+
+    <section class="poster board" id="board" aria-labelledby="board-title">
+      <h2 class="display" id="board-title">Tableau des primes</h2>
+      <ol class="ledger" id="ledger"></ol>
+      <h3 class="display small">Armes favorites</h3>
+      <ul class="ledger" id="weapon-stats"></ul>
+      <p class="empty" id="weapons-empty">Personne n'a encore dégainé.</p>
+    </section>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

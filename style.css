@@ -1,0 +1,211 @@
+:root {
+  --wood: #3b2a1a;      /* encre, planches du mur */
+  --wood-dark: #24180d;
+  --parchment: #e9d8b4; /* affiche */
+  --paper: #f3e6c8;     /* cadre du portrait */
+  --ink: #3b2a1a;
+  --blood: #8b1e1e;     /* tampon, tache */
+  --dust: #b89b6a;      /* traits secondaires */
+  --gold: #b5831f;      /* leader */
+  --display: "Rye", "Georgia", serif;
+  --text: "IM Fell English", "Georgia", serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  color: var(--ink);
+  font: 18px/1.5 var(--text);
+  /* mur de planches */
+  background:
+    repeating-linear-gradient(90deg, transparent 0 78px, rgba(0,0,0,.35) 78px 80px),
+    linear-gradient(var(--wood), var(--wood-dark));
+  background-color: var(--wood);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: max(20px, env(safe-area-inset-top)) 16px 40px;
+}
+
+/* Affiche clouée */
+.poster {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 26px 20px 22px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(ellipse at 90% 95%, rgba(110,70,30,.25), transparent 55%),
+    var(--parchment);
+  box-shadow: 0 2px 0 rgba(0,0,0,.2), 0 14px 30px rgba(0,0,0,.45);
+  clip-path: polygon(0 1%, 4% 0, 30% .6%, 58% 0, 86% .8%, 100% 0, 99.4% 30%, 100% 62%, 99.2% 100%, 70% 99.3%, 40% 100%, 12% 99.2%, 0 100%, .7% 60%);
+}
+.poster::before { /* le clou */
+  content: "";
+  position: absolute;
+  top: 9px; left: 50%;
+  width: 10px; height: 10px; margin-left: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #9a8f80, #3d362e);
+}
+
+.display {
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 6px 0 10px;
+  font-size: 30px;
+}
+.display.small { font-size: 20px; margin-top: 22px; }
+.wanted { font-size: clamp(40px, 14.5vw, 68px); letter-spacing: .02em; margin: 4px 0 0; }
+
+.hunter { margin: 0 0 14px; font-size: 19px; font-style: italic; }
+#hunter-name { font-style: normal; font-weight: bold; }
+
+.link {
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  padding: 6px 4px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+:focus-visible { outline: 3px solid var(--blood); outline-offset: 3px; }
+
+/* Le portrait, zone de tap */
+.stage {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 46dvh;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  background: var(--paper);
+  border: 5px double var(--ink);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.moth {
+  position: absolute;
+  left: 50%; top: 58%;
+  width: 120px; height: 90px;
+  margin: -45px 0 0 -60px;
+  fill: #7a5c3e;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.moth .body { fill: var(--ink); }
+.moth .antenna { fill: none; stroke-width: 2; }
+.moth svg { overflow: visible; }
+
+.smasher {
+  position: absolute;
+  left: 50%; top: 0;
+  font-size: 96px;
+  line-height: 1;
+  transform: translate(-50%, -120%);
+  filter: sepia(.5) drop-shadow(0 6px 4px rgba(0,0,0,.35));
+}
+
+.splat, .stamp { position: absolute; opacity: 0; pointer-events: none; }
+
+.reward {
+  position: relative;
+  margin: 16px 0 6px;
+  font-family: var(--display);
+  font-size: 34px;
+  line-height: 1;
+}
+.plus { position: absolute; right: 10%; top: 0; color: var(--blood); opacity: 0; }
+
+/* Armes */
+.weapons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 14px 0 6px;
+}
+.weapon {
+  width: 44px; height: 44px;
+  padding: 0;
+  font-size: 22px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform .12s, background .12s;
+}
+.weapon[aria-pressed="true"] {
+  background: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: 0 3px 0 var(--blood);
+}
+
+.undo { display: block; margin: 4px auto 0; }
+.to-board { display: inline-block; margin-top: 6px; }
+
+/* Choix du chasseur */
+.who-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+.who-btn {
+  font: inherit;
+  color: var(--ink);
+  padding: 10px 6px 12px;
+  background: var(--paper);
+  border: 3px double var(--ink);
+  cursor: pointer;
+}
+.who-btn small {
+  display: block;
+  font-family: var(--display);
+  font-size: 14px;
+  letter-spacing: .08em;
+}
+.who-btn span { font-size: 20px; }
+.who-btn:active { background: var(--parchment); transform: rotate(-1.5deg); }
+
+/* Tableau */
+.ledger { list-style: none; margin: 0; padding: 0; text-align: left; }
+.ledger li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 2px;
+}
+.ledger li::after { /* points de conduite */
+  content: "";
+  order: 2;
+  flex: 1;
+  border-bottom: 2px dotted var(--dust);
+}
+.ledger .name { order: 1; }
+.ledger .num { order: 3; font-family: var(--display); font-variant-numeric: tabular-nums; }
+.ledger .me { font-weight: bold; }
+.ledger .leader .name { color: var(--gold); }
+.ledger .zero { opacity: .55; }
+.empty { font-style: italic; margin: 6px 0 0; }
