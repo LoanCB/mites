@@ -147,3 +147,24 @@ calculer les statistiques d'armes sans compteur à synchroniser.
 - Polices (une Google Font western type « Rye » ou « Smokum » est bienvenue).
 - Surnoms de chasseurs éventuels dans le classement.
 - Comportement hors ligne : le cache local de Firebase suffit.
+
+## Ajout du 2026-11-12 : destruction d'un nid
+
+Demande de Loan : un bouton sous la mite pour noter la destruction d'un nid,
+avec une animation où l'écran se remplit de mites qui s'envolent. Loan a
+préféré qu'on se lance sans questions ; les choix ci-dessous sont ceux de
+Claude.
+
+- Bouton « 🔥 Détruire un nid » sous le portrait. Un tap enregistre le nid,
+  sans confirmation (l'annulation sert de filet).
+- Données : liste séparée `/colocs/<token>/nests/<pushId> = { who, at }`,
+  mêmes règles que les mites (création, suppression sous 10 min, `at` =
+  horodatage serveur). Pas d'arme pour un nid.
+- Un nid ne compte pas comme une prime : compteur à part (« 🔥 N nids
+  détruits ») sous le total, et mention « · 🔥 N nids » dans le classement,
+  qui reste trié sur les mites.
+- « Annuler » porte sur la dernière action de ce téléphone, mite ou nid.
+- Animation : 40 à 160 mites (selon la taille de l'écran) jaillissent du
+  bouton, couvrent l'écran, puis s'envolent par le haut ; tampon « Nid
+  détruit ! » et vibration. Sans animation si le téléphone demande moins de
+  mouvement (tampon seul).

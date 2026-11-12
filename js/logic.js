@@ -15,11 +15,11 @@ export function countFor(kills, who) {
   return kills.filter((k) => k.who === who).length;
 }
 
-/** @param {Kill[]} kills @param {string[]} colocs */
-export function leaderboard(kills, colocs) {
-  const rows = colocs.map((who, i) => ({ who, count: countFor(kills, who), i }));
+/** Classement par mites ; les nids sont affichés à côté mais ne départagent pas. @param {Kill[]} kills @param {string[]} colocs */
+export function leaderboard(kills, colocs, nests = []) {
+  const rows = colocs.map((who, i) => ({ who, count: countFor(kills, who), nests: countFor(nests, who), i }));
   rows.sort((a, b) => b.count - a.count || a.i - b.i);
-  return rows.map(({ who, count }, idx) => ({ who, count, leader: idx === 0 && count > 0 }));
+  return rows.map(({ who, count, nests }, idx) => ({ who, count, nests, leader: idx === 0 && count > 0 }));
 }
 
 /** @param {Kill[]} kills */
@@ -41,4 +41,8 @@ export function canUndo(lastKill, kills, now, windowMs) {
 
 export function primesLabel(n) {
   return `${n} ${n > 1 ? "primes" : "prime"}`;
+}
+
+export function nestsLabel(n) {
+  return `${n} ${n > 1 ? "nids" : "nid"}`;
 }

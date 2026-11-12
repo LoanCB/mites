@@ -48,7 +48,10 @@
         <span class="stamp" id="stamp" aria-hidden="true">Abattue !</span>
       </button>
 
+      <button id="nest" class="nest-btn" type="button">🔥 Détruire un nid</button>
+
       <p class="reward"><span id="count">0 prime</span><span class="plus" id="plus" aria-hidden="true">+1</span></p>
+      <p class="nest-count" id="nest-count">0 nid détruit</p>
 
       <div class="weapons" id="weapons" role="group" aria-label="Arme"></div>
 
@@ -64,6 +67,9 @@
       <p class="empty" id="weapons-empty">Personne n'a encore dégainé.</p>
     </section>
   </main>
+
+  <!-- Envol de la nuée quand on détruit un nid (rempli par playSwarm) -->
+  <div class="swarm" id="swarm" aria-hidden="true" hidden></div>
 
   <script type="module" src="js/app.js"></script>
 </body>

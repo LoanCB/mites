@@ -14,6 +14,16 @@
             "at": { ".validate": "newData.val() === now" },
             "$other": { ".validate": false }
           }
+        },
+        "nests": {
+          ".read": true,
+          "$id": {
+            ".write": "(!data.exists() && newData.exists()) || (data.exists() && !newData.exists() && data.child('at').val() > now - 600000)",
+            ".validate": "newData.hasChildren(['who', 'at'])",
+            "who": { ".validate": "newData.isString() && newData.val().matches(/^(Lallie|Pascale|Camille|Clara|Eurydice|Katja|Alexandre|Edouard|Guy|Loan)$/)" },
+            "at": { ".validate": "newData.val() === now" },
+            "$other": { ".validate": false }
+          }
         }
       }
     }

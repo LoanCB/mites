@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { COLOCS, WEAPONS, UNDO_WINDOW_MS } from "../js/config.js";
-import { resolveToken, countFor, leaderboard, weaponStats, canUndo, primesLabel } from "../js/logic.js";
+import { resolveToken, countFor, leaderboard, weaponStats, canUndo, primesLabel, nestsLabel } from "../js/logic.js";
 
 const T = "abcdefghijklmnopqrstuvwx"; // 24 caractères
 
@@ -46,4 +46,18 @@ test("primesLabel accorde au singulier", () => {
   assert.equal(primesLabel(1), "1 prime");
   assert.equal(primesLabel(0), "0 prime");
   assert.equal(primesLabel(42), "42 primes");
+});
+
+test("nestsLabel accorde au singulier", () => {
+  assert.equal(nestsLabel(0), "0 nid");
+  assert.equal(nestsLabel(1), "1 nid");
+  assert.equal(nestsLabel(3), "3 nids");
+});
+
+test("leaderboard compte les nids de chacun, sans changer le classement", () => {
+  const nests = [{ id: "n1", who: "Loan", at: 0 }, { id: "n2", who: "Loan", at: 0 }];
+  const lb = leaderboard([K("Guy")], COLOCS, nests);
+  assert.equal(lb[0].who, "Guy");
+  assert.equal(lb.find((r) => r.who === "Loan").nests, 2);
+  assert.equal(lb[0].nests, 0);
 });

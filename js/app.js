@@ -1,5 +1,5 @@
 import { COLOCS, WEAPONS, DEFAULT_WEAPON, UNDO_WINDOW_MS } from "./config.js";
-import { resolveToken, countFor, leaderboard, weaponStats, canUndo, primesLabel } from "./logic.js";
+import { resolveToken, countFor, leaderboard, weaponStats, canUndo, primesLabel, nestsLabel } from "./logic.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -21,6 +21,7 @@ const state = {
   who: null,
   weapon: DEFAULT_WEAPON,
   kills: [],
+  nests: [],
   unsubscribe: null,
 };
 
@@ -46,13 +47,17 @@ function renderWeapons() {
 }
 
 function renderUndo() {
-  $("undo").hidden = !canUndo(storage.getJSON("mites.lastKill"), state.kills, Date.now(), UNDO_WINDOW_MS);
+  const last = storage.getJSON("mites.lastKill");
+  $("undo").hidden = !canUndo(last, [...state.kills, ...state.nests], Date.now(), UNDO_WINDOW_MS);
+  $("undo").textContent = last?.list === "nests" ? "↶ annuler le nid" : "↶ annuler la dernière";
 }
 
 function renderCounts() {
   $("count").textContent = primesLabel(countFor(state.kills, state.who));
+  const myNests = countFor(state.nests, state.who);
+  $("nest-count").textContent = `🔥 ${nestsLabel(myNests)} ${myNests > 1 ? "détruits" : "détruit"}`;
 
-  $("ledger").replaceChildren(...leaderboard(state.kills, COLOCS).map((row) => {
+  $("ledger").replaceChildren(...leaderboard(state.kills, COLOCS, state.nests).map((row) => {
     const li = document.createElement("li");
     li.classList.toggle("me", row.who === state.who);
     li.classList.toggle("leader", row.leader);
@@ -60,6 +65,12 @@ function renderCounts() {
     const name = document.createElement("span");
     name.className = "name";
     name.textContent = row.leader ? `🤠 ${row.who}` : row.who;
+    if (row.nests > 0) {
+      const nests = document.createElement("small");
+      nests.className = "nests";
+      nests.textContent = ` · 🔥 ${nestsLabel(row.nests)}`;
+      name.append(nests);
+    }
     const num = document.createElement("span");
     num.className = "num";
     num.textContent = row.count;
@@ -96,6 +107,57 @@ export function playSquash() {
   void poster.offsetWidth; // force le reflow pour relancer l'animation
   poster.classList.add("squash");
   navigator.vibrate?.(30);
+}
+
+// Nid détruit : la nuée jaillit du bouton, remplit l'écran puis s'envole par le haut.
+const SWARM_MS = 2600;
+let swarmTimer = null;
+
+export function playSwarm(from) {
+  const swarm = $("swarm");
+  const template = $("moth").querySelector("svg");
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const origin = from.getBoundingClientRect();
+  const ox = origin.left + origin.width / 2;
+  const oy = origin.top + origin.height / 2;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // De quoi couvrir l'écran : environ une mite par carré de 55 px.
+  const n = reduced ? 0 : Math.min(160, Math.max(40, Math.round((w * h) / (55 * 55))));
+  const rnd = (a, b) => a + Math.random() * (b - a);
+
+  const moths = Array.from({ length: n }, () => {
+    const x = rnd(-20, w - 40);
+    const y = rnd(-20, h - 30);
+    const m = document.createElement("span");
+    m.className = "swarm-moth";
+    m.style.left = `${x}px`;
+    m.style.top = `${y}px`;
+    m.style.setProperty("--fx", `${ox - x - 30}px`);
+    m.style.setProperty("--fy", `${oy - y - 22}px`);
+    m.style.setProperty("--jx", `${rnd(-30, 30)}px`);
+    m.style.setProperty("--jy", `${rnd(-30, 10)}px`);
+    m.style.setProperty("--ex", `${rnd(-160, 160)}px`);
+    m.style.setProperty("--ey", `${-(y + rnd(120, 400))}px`);
+    m.style.setProperty("--s", rnd(0.35, 1.05).toFixed(2));
+    m.style.setProperty("--r0", `${rnd(-40, 40).toFixed(0)}deg`);
+    m.style.setProperty("--r", `${rnd(-25, 25).toFixed(0)}deg`);
+    m.style.setProperty("--d", `${rnd(0, 0.35).toFixed(2)}s`);
+    m.append(template.cloneNode(true));
+    return m;
+  });
+  const stamp = document.createElement("span");
+  stamp.className = "swarm-stamp";
+  stamp.textContent = "Nid détruit !";
+
+  clearTimeout(swarmTimer);
+  swarm.replaceChildren(...moths, stamp);
+  swarm.hidden = false;
+  navigator.vibrate?.([40, 30, 40, 30, 90]);
+  swarmTimer = setTimeout(() => {
+    swarm.hidden = true;
+    swarm.replaceChildren();
+  }, SWARM_MS + 400);
 }
 
 // --- Écrans ---
@@ -156,12 +218,19 @@ function bindEvents() {
     renderUndo();
   });
 
+  $("nest").addEventListener("click", (e) => {
+    const last = state.store.addNest(state.who);
+    storage.set("mites.lastKill", JSON.stringify(last));
+    playSwarm(e.currentTarget);
+    renderUndo();
+  });
+
   $("undo").addEventListener("click", async () => {
     const last = storage.getJSON("mites.lastKill");
     storage.del("mites.lastKill");
     $("undo").hidden = true;
     if (last) {
-      try { await state.store.remove(last.id); } catch (err) { console.error("Annulation refusée", err); }
+      try { await state.store.remove(last.id, last.list ?? "kills"); } catch (err) { console.error("Annulation refusée", err); }
     }
   });
 
@@ -191,6 +260,10 @@ async function main() {
     () => {
       state.unsubscribe?.();
       show("closed");
+    },
+    (nests) => {
+      state.nests = nests;
+      if (state.who) renderCounts();
     },
   );
   if ($("closed").hidden === false) return; // refusé tout de suite

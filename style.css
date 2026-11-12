@@ -162,6 +162,25 @@ body {
   box-shadow: 0 3px 0 var(--blood);
 }
 
+/* Bouton du nid, sous le portrait */
+.nest-btn {
+  display: block;
+  margin: 14px auto 0;
+  padding: 8px 18px 6px;
+  font: 20px/1.2 var(--display);
+  color: var(--blood);
+  background: var(--paper);
+  border: 3px double var(--blood);
+  border-radius: 4px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transform: rotate(-1.5deg);
+  transition: transform .12s;
+}
+.nest-btn:active { transform: rotate(1deg) scale(.96); }
+.nest-count { margin: 4px 0 0; font-size: 16px; font-style: italic; }
+.ledger .nests { font-size: 14px; font-weight: normal; font-style: italic; color: var(--blood); }
+
 .undo { display: block; margin: 4px auto 0; }
 .to-board { display: inline-block; margin-top: 6px; }
 
@@ -301,7 +320,60 @@ body {
   100% { opacity: 0; transform: translateY(-44px); }
 }
 
+/* La nuée qui s'envole du nid détruit (playSwarm) */
+.swarm {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+}
+.swarm-moth {
+  position: absolute;
+  width: 60px; height: 45px;
+  fill: #7a5c3e;
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  opacity: 0;
+  animation: swarm 2.6s var(--d) cubic-bezier(.4, 0, .6, 1) forwards;
+}
+.swarm-moth svg { width: 100%; height: 100%; overflow: visible; }
+.swarm-moth .body { fill: var(--ink); }
+.swarm-moth .antenna { fill: none; stroke-width: 2.5; }
+.swarm-moth:nth-child(3n) { fill: #9a7b55; }
+.swarm-moth:nth-child(5n) { fill: #5e4630; }
+@keyframes swarm {
+  0% { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(.1); }
+  6% { opacity: 1; }
+  32% { transform: translate(0, 0) scale(var(--s)) rotate(var(--r0)); }
+  52% { opacity: 1; transform: translate(var(--jx), var(--jy)) scale(var(--s)) rotate(var(--r)); }
+  100% { opacity: 1; transform: translate(var(--ex), var(--ey)) scale(var(--s)) rotate(var(--r)); }
+}
+.swarm-stamp {
+  position: absolute;
+  left: 50%; top: 42%;
+  z-index: 1;
+  padding: 4px 16px 0;
+  font: clamp(36px, 11vw, 56px)/1.2 var(--display);
+  white-space: nowrap;
+  color: var(--blood);
+  background: rgba(243, 230, 200, .85);
+  border: 5px solid var(--blood);
+  border-radius: 8px;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-10deg);
+  animation: swarm-stamp 2.6s forwards;
+}
+@keyframes swarm-stamp {
+  0%, 22% { opacity: 0; transform: translate(-50%, -50%) rotate(-10deg) scale(2.6); }
+  32% { opacity: 1; transform: translate(-50%, -50%) rotate(-10deg) scale(1); }
+  85% { opacity: 1; transform: translate(-50%, -50%) rotate(-10deg) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(-10deg) scale(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .swarm-stamp { animation: fade 2.6s forwards; }
   .moth svg, .wing-l, .wing-r { animation: none; }
   .squash, .squash .smasher, .squash .moth, .squash .splat { animation: none; }
   .squash .stamp { animation: fade 1s; }

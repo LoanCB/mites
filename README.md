@@ -35,7 +35,9 @@ Garde-le de côté. **Ne le commite jamais** : le dépôt est public.
 Ces règles :
 - n'ouvrent la lecture et l'écriture qu'avec ce token ;
 - n'acceptent que les dix prénoms et les sept armes connues ;
-- permettent d'ajouter une mite, ou d'en supprimer une de moins de 10 minutes (le bouton « annuler »), mais jamais de modifier une mite.
+- permettent d'ajouter une mite ou un nid détruit, ou d'en supprimer un de moins de 10 minutes (le bouton « annuler »), mais jamais de les modifier.
+
+Après une mise à jour de `database.rules.json` (par exemple l'ajout des nids), recolle les règles de la même façon, sinon Firebase refusera les nouvelles écritures.
 
 ### 5. Mettre en ligne avec GitHub Pages
 

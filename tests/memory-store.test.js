@@ -21,3 +21,15 @@ test("memory-store : le token de démo « refuse… » appelle onDenied", () => 
   createStore("refuse".padEnd(24, "x")).subscribe(() => {}, () => (denied = true));
   assert.equal(denied, true);
 });
+
+test("memory-store : addNest notifie la liste des nids, remove(id, \"nests\") la retire", async () => {
+  const store = createStore(T);
+  let kills = null, nests = [];
+  store.subscribe((k) => (kills = k), () => assert.fail("refusé"), (n) => (nests = n));
+  const last = store.addNest("Guy");
+  assert.equal(last.list, "nests");
+  assert.deepEqual(nests.map((n) => n.who), ["Guy"]);
+  assert.equal(kills.length, 0);
+  await store.remove(last.id, "nests");
+  assert.equal(nests.length, 0);
+});
